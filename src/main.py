@@ -11,31 +11,49 @@ y = data["disease"]
 model = GaussianNB()
 model.fit(X, y)
 
-# User input
-print("\nAnswer with 1 for YES and 0 for NO\n")
+print("\nAnswer with yes/no or 1/0\n")
 
+# User input
 symptoms = {}
+
 for col in X.columns:
-    symptoms[col] = int(input(f"Do you have {col}? "))
+    while True:
+        ans = input(f"Do you have {col}? ").strip().lower()
+
+        if ans in ["yes", "y", "1"]:
+            symptoms[col] = 1
+            break
+        elif ans in ["no", "n", "0"]:
+            symptoms[col] = 0
+            break
+        else:
+            print("Please answer with yes, no, 1 or 0.")
 
 input_data = pd.DataFrame([symptoms])
 
 # Prediction
-prediction = model.predict(input_data)[0]
-probability = model.predict_proba(input_data).max()
+probs = model.predict_proba(input_data)[0]
+diseases = model.classes_
 
-print(f"\nPossible Disease: {prediction}")
-print(f"Confidence: {round(probability * 100, 2)}%")
+results = list(zip(diseases, probs))
+results.sort(key=lambda x: x[1], reverse=True)
 
-# Simple recommendation system
+print("\nTop Possible Diseases:\n")
+for disease, prob in results[:3]:
+    print(f"{disease}: {round(prob * 100, 2)}%")
+
+prediction = results[0][0]
+
+# Recommendation system
 recommendations = {
     "Flu": "Rest and drink warm fluids.",
     "Cold": "Take vitamin C and rest.",
     "Malaria": "Seek medical attention immediately.",
-    "Migraine": "Rest in dark room and avoid noise.",
+    "Migraine": "Rest in a dark room and avoid noise.",
     "COVID-19": "Isolate and get tested.",
     "Food_Poisoning": "Stay hydrated and avoid solid food."
 }
 
-print("Recommendation:", recommendations[prediction])
+print("\nRecommendation:")
+print(recommendations[prediction])
 
