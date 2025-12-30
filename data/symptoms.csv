@@ -1,0 +1,8 @@
+fever,cough,fatigue,headache,nausea,disease
+1,1,1,0,0,Flu
+0,1,0,0,0,Cold
+1,0,1,1,0,Malaria
+0,0,1,1,1,Migraine
+1,1,0,1,0,COVID-19
+0,0,0,1,1,Food_Poisoning
+
